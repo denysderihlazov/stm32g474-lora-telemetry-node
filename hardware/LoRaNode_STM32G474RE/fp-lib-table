@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "RFM95W")(type "KiCad")(uri "${KIPRJMOD}/Libs/Footprint/RFM95W.pretty")(options "")(descr ""))
+  (lib (name "Switch_chinesse")(type "KiCad")(uri "${KIPRJMOD}/Libs/Footprint/Switch_chinesse.pretty")(options "")(descr ""))
+)

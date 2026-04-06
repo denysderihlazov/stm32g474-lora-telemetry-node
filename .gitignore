@@ -1,0 +1,35 @@
+
+#============================= Firmware =============================
+# --- Build artifacts (Compiled files) ---
+**/Debug/
+**/Release/
+**/bin/
+**/obj/
+*.elf
+*.map
+*.list
+*.hex
+*.bin
+
+# --- IDE Temporary files ---
+.metadata/
+.settings/
+*.bak
+*.log
+*.tmp
+
+# --- User-specific settings ---
+*.launch
+*.uvguix.*
+
+#============================= HARDWARE =============================
+# --- KiCad artifacts ---
+*.pyc
+*.bak
+*-bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*~
+_autosave-*
+*.lck
+fp-info-cache

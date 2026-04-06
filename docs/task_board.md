@@ -17,16 +17,15 @@ Project: STM32G474RET + RFM95W-868S2 + FreeRTOS + BME280 + SSD1306 + ADC/DMA + U
 
 ## 🟡 In Progress
 
-- [ ] Stage 1: Initial CubeMX configuration (SPI, I2C, UART, FreeRTOS)
+Stage 1: 
+
+- [ ] Initial CubeMX configuration (I2C, UART)
 - [ ] Calculate SPI prescaler for RFM95 (target <10MHz)
 
 ---
 
 ## ⚪ Backlog
 
-- [ ] calculate and set SPI prescaler (as I know max 10MHz for RFM95)
-- [ ] configure SPI for RFM95
-- [ ] configure DIO0
 
 
 ---
@@ -50,16 +49,16 @@ Project: STM32G474RET + RFM95W-868S2 + FreeRTOS + BME280 + SSD1306 + ADC/DMA + U
 
 ### Tasks
 
-- [ ] calculate and set SPI prescaler (as I know max 10MHz for RFM95)
-- [ ] configure GPIO (SPI for RFM95) 
-- [ ] configure DIO0
-- [ ] set EXTI trigger = Rising edge
-- [ ] set-up NVIC
+- [x] calculate and set SPI prescaler (as I know max 10MHz for RFM95)
+- [x] configure GPIO (SPI for RFM95) 
+- [x] configure DIO0
+- [x] set EXTI trigger = Rising edge
+- [x] set-up NVIC
 - [ ] configure I2C for BME280 and SSD1306
 - [ ] configure ADC for power measurement
 - [ ] connect DMA to ADC
-- [ ] enable USB CDC
-- [ ] enable FreeRTOS CMSIS_V2
+- [x] enable USB CDC
+- [x] enable FreeRTOS CMSIS_V2
 - [ ] assign clean and consistent pin labels
 
 ---
@@ -69,9 +68,9 @@ Project: STM32G474RET + RFM95W-868S2 + FreeRTOS + BME280 + SSD1306 + ADC/DMA + U
 ### Tasks
 
 - [ ] create folder structure:
-  - [ ] `Drivers/rfm95`
-  - [ ] `Drivers/bme280`
-  - [ ] `Drivers/ssd1306`
+  - [x] `Components/rfm95`
+  - [x] `Components/bme280`
+  - [x] `Components/ssd1306`
   - [ ] `Services/protocol`
   - [ ] `Services/telemetry`
   - [ ] `Services/power`
@@ -317,6 +316,26 @@ Note: At this stage we should know how much buttons we need. Two or Three
     Documentation baseline established (README.md, task_board.md).
 
 
+- [ ] Stage 1: CubeMX Base
+    calculate and set SPI prescaler (as I know max 10MHz for RFM95)
+
+    configure DIO0
+
+    configure GPIO (SPI for RFM95) 
+
+    set-up NVIC
+
+    set EXTI trigger = Rising edge (for Lora DIO0)
+
+    set-up NVIC
+
+
+- [ ] Stage 2 - Architecture
+  Components/rfm95
+
+  Components/bme280
+  
+  Components/ssd1306
 
 ---
 
@@ -336,11 +355,19 @@ Note: At this stage we should know how much buttons we need. Two or Three
 
 ---
 
-## Daily log
+## Issues
 
-```text
-Today:
-- worked on:
-- working now:
-- blocked by:
-- next step:
+1) SPI freq. limitation
+According to the RFM95W datasheet, the maximum SPI clock frequency is 10 MHz
+SPI Prescaler: We cannot achieve exactly 10 MHz from a 170 MHz APB clock using standard power-of-two dividers.
+
+Options:
+    1 Reduce APB to 144 MHz: Not an option (compromises overall system performance).
+
+    2 Set Prescaler to 32: Results in ~5.3 MHz. Safe, but leaves 50% of the bandwidth unused.
+
+    3 Use Independent Kernel Clock: In the G4 series, we can source the SPI clock from PLLQ or HSI/HSE via the RCC_CCIPR register. This allows us to hit the 9–10 MHz target regardless of the APB frequency.
+
+Temporary: we can use SPI1 with 32 Baud rate prescaller (which is 3 MHz).
+
+My future decision: Option 3 is preferred to maintain maximum CPU/Peripheral performance while maximizing SPI throughput.
