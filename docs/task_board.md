@@ -17,7 +17,8 @@ Project: STM32G474RET + RFM95W-868S2 + FreeRTOS + BME280 + SSD1306 + ADC/DMA + U
 
 ## 🟡 In Progress
 
-Whole Stage 0
+- [ ] Stage 1: Initial CubeMX configuration (SPI, I2C, UART, FreeRTOS)
+- [ ] Calculate SPI prescaler for RFM95 (target <10MHz)
 
 ---
 
@@ -27,20 +28,21 @@ Whole Stage 0
 - [ ] configure SPI for RFM95
 - [ ] configure DIO0
 
+
 ---
 
 ## Stage 0 - Project Setup
 
 ### Tasks
 
-- [ ] create repo: `stm32g474-lora-telemetry-node`
-- [ ] create folders:
-  - [ ] `firmware/`
-  - [ ] `hardware/`
-  - [ ] `images/`
-  - [ ] `docs/`
-- [ ] create `docs/task_board.md`
-- [ ] create minimal `README.md` placeholder
+- [x] create repo: `stm32g474-lora-telemetry-node`
+- [x] create folders:
+  - [x] `firmware/`
+  - [x] `hardware/`
+  - [x] `images/`
+  - [x] `docs/`
+- [x] create `docs/task_board.md`
+- [x] create minimal `README.md` placeholder
 
 ---
 
@@ -49,7 +51,7 @@ Whole Stage 0
 ### Tasks
 
 - [ ] calculate and set SPI prescaler (as I know max 10MHz for RFM95)
-- [ ] configure SPI for RFM95
+- [ ] configure GPIO (SPI for RFM95) 
 - [ ] configure DIO0
 - [ ] set EXTI trigger = Rising edge
 - [ ] set-up NVIC
@@ -302,9 +304,19 @@ Note: At this stage we should know how much buttons we need. Two or Three
 
 ## 🟢 Done
 
-- [x] Initial LoRa communication (basic TX/RX)
 - [x] Project direction selected
 - [x] Decision: use AI as PM, not code generator
+
+
+- [x] Stage 0: Project Setup
+
+    Repository stm32g474-lora-telemetry-node created.
+
+    Project structure initialized (firmware/, hardware/, docs/, images/).
+
+    Documentation baseline established (README.md, task_board.md).
+
+
 
 ---
 
