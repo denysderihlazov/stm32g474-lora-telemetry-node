@@ -27,6 +27,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -51,12 +52,65 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi2;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for radio_task */
+osThreadId_t radio_taskHandle;
+uint32_t radio_taskBuffer[ 256 ];
+osStaticThreadDef_t radio_taskControlBlock;
+const osThreadAttr_t radio_task_attributes = {
+  .name = "radio_task",
+  .stack_mem = &radio_taskBuffer[0],
+  .stack_size = sizeof(radio_taskBuffer),
+  .cb_mem = &radio_taskControlBlock,
+  .cb_size = sizeof(radio_taskControlBlock),
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for sensor_task */
+osThreadId_t sensor_taskHandle;
+uint32_t sensor_taskBuffer[ 256 ];
+osStaticThreadDef_t sensor_taskControlBlock;
+const osThreadAttr_t sensor_task_attributes = {
+  .name = "sensor_task",
+  .stack_mem = &sensor_taskBuffer[0],
+  .stack_size = sizeof(sensor_taskBuffer),
+  .cb_mem = &sensor_taskControlBlock,
+  .cb_size = sizeof(sensor_taskControlBlock),
+  .priority = (osPriority_t) osPriorityNormal1,
+};
+/* Definitions for telemetry_task */
+osThreadId_t telemetry_taskHandle;
+uint32_t telemetry_taskBuffer[ 256 ];
+osStaticThreadDef_t telemetry_taskControlBlock;
+const osThreadAttr_t telemetry_task_attributes = {
+  .name = "telemetry_task",
+  .stack_mem = &telemetry_taskBuffer[0],
+  .stack_size = sizeof(telemetry_taskBuffer),
+  .cb_mem = &telemetry_taskControlBlock,
+  .cb_size = sizeof(telemetry_taskControlBlock),
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+};
+/* Definitions for ui_task */
+osThreadId_t ui_taskHandle;
+uint32_t ui_taskBuffer[ 256 ];
+osStaticThreadDef_t ui_taskControlBlock;
+const osThreadAttr_t ui_task_attributes = {
+  .name = "ui_task",
+  .stack_mem = &ui_taskBuffer[0],
+  .stack_size = sizeof(ui_taskBuffer),
+  .cb_mem = &ui_taskControlBlock,
+  .cb_size = sizeof(ui_taskControlBlock),
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for cli_task */
+osThreadId_t cli_taskHandle;
+uint32_t cli_taskBuffer[ 256 ];
+osStaticThreadDef_t cli_taskControlBlock;
+const osThreadAttr_t cli_task_attributes = {
+  .name = "cli_task",
+  .stack_mem = &cli_taskBuffer[0],
+  .stack_size = sizeof(cli_taskBuffer),
+  .cb_mem = &cli_taskControlBlock,
+  .cb_size = sizeof(cli_taskControlBlock),
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* USER CODE BEGIN PV */
 #define DEVICE_MODE_TX 1
@@ -72,7 +126,11 @@ static void MX_DMA_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_ADC1_Init(void);
-void StartDefaultTask(void *argument);
+void StartRadioTask(void *argument);
+void StartSensorTask(void *argument);
+void StartTelemetryTask(void *argument);
+void StartUiTask(void *argument);
+void StartCliTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -140,8 +198,20 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of radio_task */
+  radio_taskHandle = osThreadNew(StartRadioTask, NULL, &radio_task_attributes);
+
+  /* creation of sensor_task */
+  sensor_taskHandle = osThreadNew(StartSensorTask, NULL, &sensor_task_attributes);
+
+  /* creation of telemetry_task */
+  telemetry_taskHandle = osThreadNew(StartTelemetryTask, NULL, &telemetry_task_attributes);
+
+  /* creation of ui_task */
+  ui_taskHandle = osThreadNew(StartUiTask, NULL, &ui_task_attributes);
+
+  /* creation of cli_task */
+  cli_taskHandle = osThreadNew(StartCliTask, NULL, &cli_task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -429,6 +499,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED_USER_GPIO_Port, LED_USER_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LORA_NSS_GPIO_Port, LORA_NSS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -439,6 +512,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BTN_USER_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_USER_Pin LORA_RST_Pin */
+  GPIO_InitStruct.Pin = LED_USER_Pin|LORA_RST_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LORA_DIO0_Pin */
   GPIO_InitStruct.Pin = LORA_DIO0_Pin;
@@ -453,13 +533,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LORA_NSS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LORA_RST_Pin */
-  GPIO_InitStruct.Pin = LORA_RST_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LORA_RST_GPIO_Port, &GPIO_InitStruct);
-
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
@@ -473,14 +546,14 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_StartRadioTask */
 /**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used
-  * @retval None
-  */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+* @brief Function implementing the radio_task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartRadioTask */
+void StartRadioTask(void *argument)
 {
   /* init code for USB_Device */
   MX_USB_Device_Init();
@@ -491,6 +564,78 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_StartSensorTask */
+/**
+* @brief Function implementing the sensor_task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartSensorTask */
+void StartSensorTask(void *argument)
+{
+  /* USER CODE BEGIN StartSensorTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartSensorTask */
+}
+
+/* USER CODE BEGIN Header_StartTelemetryTask */
+/**
+* @brief Function implementing the telemetry_task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTelemetryTask */
+void StartTelemetryTask(void *argument)
+{
+  /* USER CODE BEGIN StartTelemetryTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTelemetryTask */
+}
+
+/* USER CODE BEGIN Header_StartUiTask */
+/**
+* @brief Function implementing the ui_task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartUiTask */
+void StartUiTask(void *argument)
+{
+  /* USER CODE BEGIN StartUiTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartUiTask */
+}
+
+/* USER CODE BEGIN Header_StartCliTask */
+/**
+* @brief Function implementing the cli_task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCliTask */
+void StartCliTask(void *argument)
+{
+  /* USER CODE BEGIN StartCliTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartCliTask */
 }
 
 /**

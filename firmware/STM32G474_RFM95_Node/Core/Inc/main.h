@@ -73,6 +73,8 @@ void Error_Handler(void);
 #define RCC_OSC_OUT_GPIO_Port GPIOF
 #define BAT_ADC_Pin GPIO_PIN_0
 #define BAT_ADC_GPIO_Port GPIOA
+#define LED_USER_Pin GPIO_PIN_5
+#define LED_USER_GPIO_Port GPIOA
 #define LORA_DIO0_Pin GPIO_PIN_11
 #define LORA_DIO0_GPIO_Port GPIOB
 #define LORA_DIO0_EXTI_IRQn EXTI15_10_IRQn
