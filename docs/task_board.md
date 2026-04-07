@@ -17,16 +17,22 @@ Project: STM32G474RET + RFM95W-868S2 + FreeRTOS + BME280 + SSD1306 + ADC/DMA + U
 
 ## 🟡 In Progress
 
-Stage 1: 
+Stage 3
 
-- [ ] Initial CubeMX configuration (I2C, UART)
-- [ ] Calculate SPI prescaler for RFM95 (target <10MHz)
-
+RTOS
+- [ ] create tasks:
+  - [ ] `radio_task`
+  - [ ] `sensor_task`
+  - [ ] `telemetry_task`
+  - [ ] `ui_task`
+  - [ ] `cli_task`
+- [ ] set stack sizes (I think 256 is our minimum)
 ---
 
 ## ⚪ Backlog
 
-
+- [ ] verify scheduler startup
+- [ ] verify system stability
 
 ---
 
@@ -54,12 +60,12 @@ Stage 1:
 - [x] configure DIO0
 - [x] set EXTI trigger = Rising edge
 - [x] set-up NVIC
-- [ ] configure I2C for BME280 and SSD1306
-- [ ] configure ADC for power measurement
-- [ ] connect DMA to ADC
+- [x] configure I2C for BME280 and SSD1306
+- [x] configure ADC for power measurement
+- [x] connect DMA to ADC
 - [x] enable USB CDC
 - [x] enable FreeRTOS CMSIS_V2
-- [ ] assign clean and consistent pin labels
+- [x] assign clean and consistent pin labels
 
 ---
 
@@ -323,6 +329,8 @@ Note: At this stage we should know how much buttons we need. Two or Three
 
     configure GPIO (SPI for RFM95) 
 
+    configure I2C for BME280 and SSD1306
+
     set-up NVIC
 
     set EXTI trigger = Rising edge (for Lora DIO0)
@@ -331,12 +339,15 @@ Note: At this stage we should know how much buttons we need. Two or Three
 
 
 - [ ] Stage 2 - Architecture
-  Components/rfm95
+    Components/rfm95
 
-  Components/bme280
-  
-  Components/ssd1306
+    Components/bme280
+    
+    Components/ssd1306
 
+  configure ADC for power measurement
+
+  connect DMA to ADC
 ---
 
 ## Notes

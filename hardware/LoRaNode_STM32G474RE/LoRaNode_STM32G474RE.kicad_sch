@@ -305,7 +305,7 @@
 	)
 	(bus
 		(pts
-			(xy 113.03 58.42) (xy 133.35 58.42)
+			(xy 113.03 57.15) (xy 133.35 57.15)
 		)
 		(stroke
 			(width 0)
@@ -335,7 +335,7 @@
 	)
 	(bus
 		(pts
-			(xy 113.03 58.42) (xy 113.03 52.07)
+			(xy 113.03 57.15) (xy 113.03 52.07)
 		)
 		(stroke
 			(width 0)
@@ -345,7 +345,7 @@
 	)
 	(wire
 		(pts
-			(xy 95.25 101.6) (xy 102.87 101.6)
+			(xy 69.85 101.6) (xy 102.87 101.6)
 		)
 		(stroke
 			(width 0)
@@ -395,7 +395,7 @@
 	)
 	(wire
 		(pts
-			(xy 95.25 114.3) (xy 130.81 114.3)
+			(xy 69.85 114.3) (xy 130.81 114.3)
 		)
 		(stroke
 			(width 0)
@@ -1085,7 +1085,7 @@
 		)
 	)
 	(sheet
-		(at 76.2 97.79)
+		(at 50.8 97.79)
 		(size 19.05 6.35)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1101,7 +1101,7 @@
 		)
 		(uuid "39b78464-8643-4499-b0ff-26db44aad69d")
 		(property "Sheetname" "BTN_BOOT"
-			(at 76.2 97.0784 0)
+			(at 50.8 97.0784 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1110,7 +1110,7 @@
 			)
 		)
 		(property "Sheetfile" "BTN_BOOT.kicad_sch"
-			(at 76.2 104.7246 0)
+			(at 50.8 104.7246 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1119,7 +1119,7 @@
 			)
 		)
 		(pin "BTN_BOOT" input
-			(at 95.25 101.6 0)
+			(at 69.85 101.6 0)
 			(uuid "e1673008-1647-4717-8196-4663bbbe641f")
 			(effects
 				(font
@@ -1204,7 +1204,7 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "867d24b3-2009-4020-b1d7-21583583f010")
-		(property "Sheetname" "SSD1306{I2C}"
+		(property "Sheetname" "I2C1{SCL SDA}"
 			(at 196.85 53.8984 0)
 			(effects
 				(font
@@ -1222,7 +1222,7 @@
 				(justify left top)
 			)
 		)
-		(pin "SSD1306{I2C}" bidirectional
+		(pin "I2C1{SCL SDA}" bidirectional
 			(at 196.85 59.69 180)
 			(uuid "b998ecd7-2ae9-4ad8-be4e-c873940331af")
 			(effects
@@ -1241,7 +1241,7 @@
 		)
 	)
 	(sheet
-		(at 76.2 110.49)
+		(at 50.8 110.49)
 		(size 19.05 6.35)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1257,7 +1257,7 @@
 		)
 		(uuid "9cee55f9-e7c6-42a8-b0c5-13a1cbc48852")
 		(property "Sheetname" "BTN_RST"
-			(at 76.2 109.7784 0)
+			(at 50.8 109.7784 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1266,7 +1266,7 @@
 			)
 		)
 		(property "Sheetfile" "BTN_RST.kicad_sch"
-			(at 76.2 117.4246 0)
+			(at 50.8 117.4246 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1275,7 +1275,7 @@
 			)
 		)
 		(pin "NRST" input
-			(at 95.25 114.3 0)
+			(at 69.85 114.3 0)
 			(uuid "6f166522-cf12-4052-9020-0fd11ffcda93")
 			(effects
 				(font
@@ -1346,7 +1346,7 @@
 				(justify left)
 			)
 		)
-		(pin "SSD1306{I2C}" bidirectional
+		(pin "I2C1{SCL SDA}" bidirectional
 			(at 176.53 62.23 0)
 			(uuid "01bc3311-cc07-41a6-af71-1aebed55f82e")
 			(effects
@@ -1417,7 +1417,7 @@
 			)
 		)
 		(pin "RFM95{MISO MOSI SCK NSS RST DIO0}" bidirectional
-			(at 133.35 58.42 180)
+			(at 133.35 57.15 180)
 			(uuid "04e2e560-d0ed-4fb3-9d78-809e077e71fa")
 			(effects
 				(font

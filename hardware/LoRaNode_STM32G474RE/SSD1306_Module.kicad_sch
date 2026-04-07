@@ -907,7 +907,7 @@
 		)
 		(uuid "f0f6cf03-bb78-4b1a-b0bd-e30ad8502769")
 	)
-	(label "SSD1306.SDA"
+	(label "I2C1.SDA"
 		(at 143.51 106.68 0)
 		(effects
 			(font
@@ -917,7 +917,7 @@
 		)
 		(uuid "214ca076-511c-496a-a37b-76974287a5e1")
 	)
-	(label "SSD1306.SCL"
+	(label "I2C1.SCL"
 		(at 143.51 104.14 0)
 		(effects
 			(font
@@ -927,7 +927,7 @@
 		)
 		(uuid "4c8a7222-52d6-40b8-aa90-22328fe8e097")
 	)
-	(hierarchical_label "SSD1306{I2C}"
+	(hierarchical_label "I2C1{SCL SDA}"
 		(shape bidirectional)
 		(at 165.1 101.6 0)
 		(effects
